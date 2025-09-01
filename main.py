@@ -1,8 +1,19 @@
 import socket
 import ssl
-import sys 
 
 COMMON_PORTS = {21: "FTP", 22: "SSH",23: "Telnet",25: "SMTP",53: "DNS", 80: "HTTP", 110: "POP3",143: "IMAP",443: "HTTPS",3306: "MySQL",3389: "RDP", 5900: "VNC",8080: "HTTP-Alt"}
+
+def check_ssh(ip, port):
+    try:
+        with socket.create_connection((ip, port), timeout=5) as connect: #create a socket connection
+            banner = connect.recv(1024).decode().strip() #receive the banner from the server
+            if banner:
+                print(f"    SSH Banner: {banner}") #print the banner if it exists
+            else:
+                print("    No SSH banner received.")
+    except Exception as e: #catch any errors
+        print(f"    SSH check failed: {e}")
+
 
 def check_tls_version(ip, port):
     try:
