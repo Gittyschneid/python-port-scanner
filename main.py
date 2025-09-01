@@ -1,7 +1,24 @@
 import socket
+import ssl
 
 COMMON_PORTS = {21: "FTP", 22: "SSH",23: "Telnet",25: "SMTP",53: "DNS", 80: "HTTP", 110: "POP3",143: "IMAP",443: "HTTPS",3306: "MySQL",3389: "RDP", 5900: "VNC",8080: "HTTP-Alt"}
 
+def check_tls_version(ip, port):
+    try:
+        context = ssl.create_default_context() #create ssl settings with secure defaults
+        with socket.create_connection((ip, port), timeout=5) as connect: #create a socket connection
+            with context.wrap_socket(connect, server_hostname=ip) as c_connect: #Takes the basic connection and adds SSL encryption to it
+                tls_version = c_connect.version() #get the TLS version
+                cipher = c_connect.cipher() #get the encryption method 
+                print(f"    TLS Version: {tls_version}")
+                if cipher:
+                    print(f"    Cipher: {cipher[0]} ({cipher[1]} bits)") #print of exists the encryption method and strength
+    except ssl.SSLError as e: #catch any SSL errors
+        print(f"    SSL Error: {e}")
+    except Exception as e: #catch any other errors
+        print(f"    TLS check failed: {e}")
+        
+    
 def scan_ports(ip, ports, timeout=1):
     open_ports = [] #a list to store any ports that are found to be open
     for port in ports: #loop through the list of ports
