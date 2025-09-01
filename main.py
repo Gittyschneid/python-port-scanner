@@ -1,5 +1,6 @@
 import socket
 import ssl
+import sys 
 
 COMMON_PORTS = {21: "FTP", 22: "SSH",23: "Telnet",25: "SMTP",53: "DNS", 80: "HTTP", 110: "POP3",143: "IMAP",443: "HTTPS",3306: "MySQL",3389: "RDP", 5900: "VNC",8080: "HTTP-Alt"}
 
@@ -39,6 +40,8 @@ def main():
             print(f"  {port} ({COMMON_PORTS[port]})")
             if port == 443 or COMMON_PORTS[port] == "HTTPS": # If it's HTTPS, check TLS version
                 check_tls_version(target_ip, port)
+            if port == 22 or COMMON_PORTS[port] == "SSH": # If it's SSH, detect SSH version
+                check_ssh(target_ip, port)
     else:
         print("No common ports open.")
 
