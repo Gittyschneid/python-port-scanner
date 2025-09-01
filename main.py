@@ -17,7 +17,7 @@ def check_tls_version(ip, port):
         print(f"    SSL Error: {e}")
     except Exception as e: #catch any other errors
         print(f"    TLS check failed: {e}")
-        
+
     
 def scan_ports(ip, ports, timeout=1):
     open_ports = [] #a list to store any ports that are found to be open
@@ -37,6 +37,8 @@ def main():
         print("Open ports:")
         for port in open_ports:
             print(f"  {port} ({COMMON_PORTS[port]})")
+            if port == 443 or COMMON_PORTS[port] == "HTTPS": # If it's HTTPS, check TLS version
+                check_tls_version(target_ip, port)
     else:
         print("No common ports open.")
 
